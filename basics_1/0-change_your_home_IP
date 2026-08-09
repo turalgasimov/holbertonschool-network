@@ -3,16 +3,6 @@
 
 set -euo pipefail
 
-HOSTS_FILE="/etc/hosts"
-BACKUP_FILE="/etc/hosts.bak.$(date +%Y%m%d%H%M%S)"
-
-if [[ $EUID -ne 0 ]]; then
-    echo "Error: run this script as root (e.g. sudo $0)" >&2
-    exit 1
-fi
-
-cp -a "$HOSTS_FILE" "$BACKUP_FILE"
-
 # Remove existing IPv4 entries for the target hostnames.
 sed -i \
     -e '/^[[:space:]]*127\.[0-9.]\+[[:space:]]\+.*\blocalhost\b/d' \
