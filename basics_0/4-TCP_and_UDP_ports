@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
+# This script lists all the listening TCP and UDP ports along with the associated programs.
 netstat --listening --programs
