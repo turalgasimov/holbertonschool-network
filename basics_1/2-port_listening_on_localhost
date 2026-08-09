@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Listens for incoming TCP connections on port 98
 
 nc -l 98
