@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# This script modifies the /etc/hosts file to change the IP address for localhost and facebook.com.
+
+set -euo pipefail
+
+HOSTS_FILE="/etc/hosts"
+BACKUP_FILE="/etc/hosts.bak.$(date +%Y%m%d%H%M%S)"
+
+if [[ $EUID -ne 0 ]]; then
+    echo "Error: run this script as root (e.g. sudo $0)" >&2
+    exit 1
+fi
+
+cp -a "$HOSTS_FILE" "$BACKUP_FILE"
+
+# Remove existing IPv4 entries for the target hostnames.
+sed -i \
+    -e '/^[[:space:]]*127\.[0-9.]\+[[:space:]]\+.*\blocalhost\b/d' \
+    -e '/^[[:space:]]*[0-9.]\+[[:space:]]\+.*\bfacebook\.com\b/d' \
+    "$HOSTS_FILE"
+
+# Add the required mappings.
+cat >> "$HOSTS_FILE" <<'EOF'
+
+# Custom hostname mappings
+127.0.0.2 localhost
+8.8.8.8 facebook.com
+EOF
+
+echo "Updated $HOSTS_FILE:"
+grep -E '(^127\.0\.0\.2[[:space:]]+localhost$|^8\.8\.8\.8[[:space:]]+facebook\.com$)' "$HOSTS_FILE"
